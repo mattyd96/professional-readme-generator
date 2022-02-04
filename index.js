@@ -1,8 +1,10 @@
-// TODO: Include packages needed for this application
+//---------------------- Packages needed for this application -------------------------------//
+
 const inquirer = require('inquirer');
 const fs = require('fs');
 
-// TODO: Create an array of questions for user input
+//---------------------- Array of questions for user input ----------------------------------//
+
 const questions = [
     {
         type: 'input',
@@ -17,33 +19,44 @@ const questions = [
     {
         type: 'input',
         message: 'What are the installation instructions of your project? ',
-        name: 'install'
+        name: 'Installation'
     },
     {
         type: 'input',
         message: 'How do you use your app? Please put in your Usage instructions here. ',
-        name: 'usage'
+        name: 'Usage'
     },
     {
         type: 'input',
         message: 'Contribution Instructions for other users? ',
-        name: 'contribution'
+        name: 'How to Contribute'
     },
     {
         type: 'input',
         message: 'Test instructions? ',
-        name: 'test'
+        name: 'Tests'
+    },
+    {
+        type: 'input',
+        message: 'What is your github username? ',
+        name: 'github'
+    },
+    {
+        type: 'input',
+        message: 'What is your E-Mail? ',
+        name: 'email'
     },
     {
         type: 'list',
         message: 'What License do you want to use? ',
-        name: 'license',
+        name: 'License',
         choices: ['MIT', 'APACHE', 'CC0']
     },
     
 ];
 
-// TODO: Create a function to write README file
+//---------------------------------- write File -----------------------------------------//
+
 const writeToFile = (fileName, data) => {
     const text = createReadme(data);
 
@@ -53,58 +66,74 @@ const writeToFile = (fileName, data) => {
     );
 };
 
+
+//---------------------------------- Create README File ---------------------------------//
+
+//Main Function
 const createReadme = data => {
-    const allParts = [];
-    const contents = [];
+    const sections = [];
+    const contents = ['Installation', 'Usage', 'How to Contribute', 'Tests'];
+    const usedContents = [];
 
+    //Add Title
     const title = createTitle(data.title);
-    //allParts.push(title);
+    //Add Description
+    const desc = createSection('Description', data.description);
 
-    const desc = createDesc(data.description);
-    //allParts.push(desc);
+    //Add Sections
+    contents.forEach(element => {
+        if(data[element].toLowerCase() != '!del') {
+            sections.push(createSection(element, data[element]));
+            usedContents.push(element);
+        }
+    });
 
-    if(data.install.toLowerCase() != '!del') {
-        const install = createInstall(data.install);
-        allParts.push(install);
-        contents.push('Installation');
-    }
+    //create Questions
+    sections.push(createQuestions(data.github, data.email));
+    usedContents.push('Questions');
 
-    if(data.usage.toLowerCase() != '!del') {
-        const usage = createUsage(data.usage);
-        allParts.push(usage);
-        contents.push('Usage');
-    }
+    //Add Table of Contents
+    const tableCont = createTableCont(usedContents);
 
-    const tableCont = createTableCont(contents);
-
-    const final = title + desc + tableCont + allParts.join('');
+    const final = title + desc + tableCont + sections.join('');
     return final;
 };
 
+// Create Title
 const createTitle = title => {
+    //TODO also create license badges here
     return `# ${title}\n\n`;
 };
 
-const createDesc = desc => {
-    return `## Description\n\n${desc}\n\n`
-};
-
+// Create Table of Contents
 const createTableCont = contents => {
     let returnStr = `## Table of Contents\n\n`;
     contents.forEach(element => {
-        returnStr += `- [${element}](#${element.toLowerCase()})`;
+        if(element !== ``) {
+            returnStr += `- [${element}](#${element.toLowerCase().replace(/\s/g, '-')})\n\n`;
+        }   
     });
 
     return returnStr + `\n\n`;
 };
 
-const createInstall = install => {
-    return `## Installation\n\n${install}\n\n`;
+//Create a General Section -> Title + content
+const createSection = (title, data) => {
+    return data.toLowerCase() != '!del' ? 
+            `## ${title}\n\n${data}\n\n` : ``;
+}
+
+//Create Questions Section -> creates a github and email link
+const createQuestions = (github, email) => {
+    const desc = `## Questions\n\nYou can reach me either through GitHub or the email below.\n\n`;
+    const githubLink = `[GitHub: ${github}](https://github.com/${github})\n\n`;
+    const emailLink = `[${email}](mailto:${email})\n\n`;
+
+    return desc + githubLink + emailLink;
 };
 
-const createUsage = usage => {
-    return `## Usage\n\n${usage}\n\n`
-};
+
+//----------------------------------- Interface Sugar --------------------------------------------//
 
 const printIntro = () => {
     console.log(
@@ -122,15 +151,13 @@ const printIntro = () => {
     )
 };
 
-const start = () => {
+//----------------------------------- INIT ------------------------------------------------------//
+//Init Function
+const init = () => {
     printIntro();
     inquirer.prompt(questions).then(response => {
         writeToFile('./Created-readme/README.md', response);
     });
-};
-// TODO: Create a function to initialize app
-const init = () => {
-    start();
 };
 
 // Function call to initialize app
