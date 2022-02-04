@@ -30,21 +30,40 @@ const questions = [
         name: 'contribution'
     },
     {
-        type: 'list',
-        message: 'Test instructions? ',
-        name: 'test',
-        choices: ['MIT', 'APACHE', 'CC0']
-    },
-    {
         type: 'input',
         message: 'Test instructions? ',
         name: 'test'
     },
+    {
+        type: 'list',
+        message: 'What License do you want to use? ',
+        name: 'license',
+        choices: ['MIT', 'APACHE', 'CC0']
+    },
+    
 ];
 
 // TODO: Create a function to write README file
 const writeToFile = (fileName, data) => {
+    const text = createReadme(data);
 
+    fs.writeFile(fileName, text, (err) =>
+    
+        err ? console.error(err) : console.log('Commit logged!')
+    );
+}
+
+const createReadme = data => {
+    const allParts = [];
+    const title = createTitle(data.title);
+    allParts.push(title);
+
+    const final = allParts.join('');
+    return final;
+}
+
+const createTitle = title => {
+    return `## ${title}`;
 }
 
 const printIntro = () => {
@@ -65,6 +84,9 @@ const printIntro = () => {
 
 const start = () => {
     printIntro();
+    inquirer.prompt(questions).then(response => {
+        writeToFile('./Created-readme/README.md', response);
+    });
 };
 // TODO: Create a function to initialize app
 const init = () => {
