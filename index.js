@@ -43,10 +43,33 @@ const questions = [
 ];
 
 // TODO: Create a function to write README file
-function writeToFile(fileName, data) {}
+const writeToFile = (fileName, data) => {
 
+}
+
+const printIntro = () => {
+    console.log(
+        `
+        #########################################################\n
+        Welcome to the README writer\n
+        #########################################################\n
+        How to use:\n
+        1. Respond to each question with the appropriate information\n
+        2. Leaving a question blank will still create the section but leave it blank\n
+        3. writing '!DEL' will skip the section and it will not be created.\n
+        4. That's it! Hope you enjoy :)\n
+        #########################################################\n
+        `
+    )
+};
+
+const start = () => {
+    printIntro();
+};
 // TODO: Create a function to initialize app
-function init() {}
+const init = () => {
+    start();
+};
 
 // Function call to initialize app
 init();
