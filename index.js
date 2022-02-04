@@ -69,6 +69,12 @@ const createReadme = data => {
         contents.push('Installation');
     }
 
+    if(data.usage.toLowerCase() != '!del') {
+        const usage = createUsage(data.usage);
+        allParts.push(usage);
+        contents.push('Usage');
+    }
+
     const tableCont = createTableCont(contents);
 
     const final = title + desc + tableCont + allParts.join('');
@@ -80,7 +86,7 @@ const createTitle = title => {
 };
 
 const createDesc = desc => {
-    return `## Description\n\n ${desc}\n\n`
+    return `## Description\n\n${desc}\n\n`
 };
 
 const createTableCont = contents => {
@@ -93,7 +99,11 @@ const createTableCont = contents => {
 };
 
 const createInstall = install => {
-    return `## Installation\n\n ${install}\n\n`;
+    return `## Installation\n\n${install}\n\n`;
+};
+
+const createUsage = usage => {
+    return `## Usage\n\n${usage}\n\n`
 };
 
 const printIntro = () => {
