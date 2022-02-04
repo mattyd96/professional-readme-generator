@@ -51,20 +51,50 @@ const writeToFile = (fileName, data) => {
     
         err ? console.error(err) : console.log('Commit logged!')
     );
-}
+};
 
 const createReadme = data => {
     const allParts = [];
-    const title = createTitle(data.title);
-    allParts.push(title);
+    const contents = [];
 
-    const final = allParts.join('');
+    const title = createTitle(data.title);
+    //allParts.push(title);
+
+    const desc = createDesc(data.description);
+    //allParts.push(desc);
+
+    if(data.install.toLowerCase() != '!del') {
+        const install = createInstall(data.install);
+        allParts.push(install);
+        contents.push('Installation');
+    }
+
+    const tableCont = createTableCont(contents);
+
+    const final = title + desc + tableCont + allParts.join('');
     return final;
-}
+};
 
 const createTitle = title => {
-    return `## ${title}`;
-}
+    return `# ${title}\n\n`;
+};
+
+const createDesc = desc => {
+    return `## Description\n\n ${desc}\n\n`
+};
+
+const createTableCont = contents => {
+    let returnStr = `## Table of Contents\n\n`;
+    contents.forEach(element => {
+        returnStr += `- [${element}](#${element.toLowerCase()})`;
+    });
+
+    return returnStr + `\n\n`;
+};
+
+const createInstall = install => {
+    return `## Installation\n\n ${install}\n\n`;
+};
 
 const printIntro = () => {
     console.log(
