@@ -57,7 +57,7 @@ const questions = [
         type: 'list',
         message: 'What License do you want to use? ',
         name: 'license',
-        choices: ['MIT', 'Unlicense']
+        choices: ['MIT', 'LGPL 3.0', 'MPL 2.0', 'AGPL 3.0', 'GPL 3.0', 'Apache 2.0', 'Unlicense']
     }, 
     {
         type: 'list',
@@ -80,7 +80,6 @@ const writeToFile = (fileName, data) => {
 
 const writeLicenseDoc = async (fileName, data) => {
     const text = await getGithubFile(data.license);
-    console.log(text);
 
     //text.then(() => {
         fs.writeFile(fileName, text.data.body , (err) =>
@@ -162,28 +161,50 @@ const createQuestions = (github, email) => {
 
 //Create license Badge
 const createLicenseBadge = license => {
-    let licenseStr = `[![License: ${license}]`;
-    const licenseLink = license.replace(/\s/g, '_');
-    const licenseColor = getLicenseColor(license);
-    const linkImg = `https://img.shields.io/badge/License-${licenseLink}-${licenseColor}.svg`;
-    licenseStr += `(${linkImg})]()`;
-    return licenseStr;
-};
+    //['MIT', 'LGPL 3.0', 'MPL 2.0', 'AGPL 3.0', 'GPL 3.0', 'Apache 2.0', 'Unlicense']
 
-const getLicenseColor = license => {
-    const keys = Object.keys(licenseColors);
-    for(let color of keys) {
-        if(license.includes(`${color}`)) {
-            return licenseColors[color];
-        }
+    switch(license) {
+        case 'MIT': 
+            return '[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)';
+        case 'LGPL 3.0':
+            return '[![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)';
+        case 'MPL 2.0':
+            return '[![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)';
+        case 'AGPL 3.0':
+            return '[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)';
+        case 'GPL 3.0':
+            return '[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)';
+        case 'Apache 2.0':
+            return '[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)';
+        case 'Unlicense':
+            return '[![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)';
+        default:
+            return '';
     }
-
-    return '';
+    
+    // let licenseStr = `[![License: ${license}]`;
+    // const licenseLink = license.replace(/\s/g, '_');
+    // const licenseColor = getLicenseColor(license);
+    // const linkImg = `https://img.shields.io/badge/License-${licenseLink}-${licenseColor}.svg`;
+    // licenseStr += `(${linkImg})]()`;
+    // return licenseStr;
 };
+
+// const getLicenseColor = license => {
+//     const keys = Object.keys(licenseColors);
+//     for(let color of keys) {
+//         if(license.includes(`${color}`)) {
+//             return licenseColors[color];
+//         }
+//     }
+
+//     return '';
+// };
 
 //----------------------------------- Create LICENSE ---------------------------------------------//
 
 const getGithubFile = license => {
+    license = license.toLowerCase().replace(/\s/g, '-');
 
     return new Promise((resolve) => {
         resolve(
@@ -191,13 +212,7 @@ const getGithubFile = license => {
                 license: 'license'
             })
           );
-    });
-//     let licenseFile = await request(`GET /licenses/${license}`, {
-//         license: 'license'
-//       });
-//     //licenseFile.then(() => {
-//         return licenseFile.body;
-//     //});   
+    });  
 };
 //----------------------------------- Interface Sugar --------------------------------------------//
 
@@ -220,12 +235,31 @@ const printIntro = () => {
 //----------------------------------- INIT ------------------------------------------------------//
 //Init Function
 const init = () => {
+    //print intro
     printIntro();
-    inquirer.prompt(questions).then(response => {
-        writeToFile('./Created-docs/README.md', response);
 
+    let folder = './Created_Docs';
+
+    if(process.argv.length > 2) {
+        folder = process.argv[2];
+    }
+
+    //ask questions
+    inquirer.prompt(questions).then(response => {
+
+        //create folder to hold written files if it does not already exist
+        if (!fs.existsSync(folder)) {
+            fs.mkdir(folder, (err) => {
+                if (err) throw err;
+            });
+        }
+        
+        //write readme file
+        writeToFile(folder + '/README.md', response);
+
+        //If user requested, write a license file
         if(response.licenseDoc === 'Yes') {
-            writeLicenseDoc('./Created-docs/LICENSE.md', response);
+            writeLicenseDoc(folder + '/LICENSE.md', response);
         }
     });
 };
