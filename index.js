@@ -19,27 +19,27 @@ const questions = [
         name: 'title'
     },
     {
-        type: 'input',
+        type: 'editor',
         message: 'What is the description of your project? ',
         name: 'description'
     },
     {
-        type: 'input',
+        type: 'editor',
         message: 'What are the installation instructions of your project? ',
         name: 'Installation'
     },
     {
-        type: 'input',
+        type: 'editor',
         message: 'How do you use your app? Please put in your Usage instructions here. ',
         name: 'Usage'
     },
     {
-        type: 'input',
+        type: 'editor',
         message: 'Contribution Instructions for other users? ',
         name: 'How to Contribute'
     },
     {
-        type: 'input',
+        type: 'editor',
         message: 'Test instructions? ',
         name: 'Tests'
     },
@@ -126,15 +126,14 @@ const createReadme = data => {
     return final;
 };
 
-// Create Title
+// Create Title and license badge
 const createTitle = (title, license) => {
-    //TODO also create license badges here
     return `# ${title}\n${createLicenseBadge(license)}\n\n`;
 };
 
 // Create Table of Contents
 const createTableCont = contents => {
-    let returnStr = `## Table of Contents\n\n`;
+    let returnStr = `<br />\n\n## Table of Contents\n\n`;
     contents.forEach(element => {
         if(element !== ``) {
             returnStr += `- [${element}](#${element.toLowerCase().replace(/\s/g, '-')})\n\n`;
@@ -146,8 +145,9 @@ const createTableCont = contents => {
 
 //Create a General Section -> Title + content
 const createSection = (title, data) => {
+    data = data.replace(/(?:\r\n|\r|\n)/g, '<br>\n')
     return data.toLowerCase() != '!del' ? 
-            `## ${title}\n\n${data}\n\n` : ``;
+            `<br />\n\n## ${title}\n\n${data}\n\n` : ``;
 }
 
 //Create Questions Section -> creates a github and email link
@@ -161,8 +161,8 @@ const createQuestions = (github, email) => {
 
 //Create license Badge
 const createLicenseBadge = license => {
-    //['MIT', 'LGPL 3.0', 'MPL 2.0', 'AGPL 3.0', 'GPL 3.0', 'Apache 2.0', 'Unlicense']
 
+    //creates badge with link of selected license
     switch(license) {
         case 'MIT': 
             return '[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)';
@@ -181,25 +181,8 @@ const createLicenseBadge = license => {
         default:
             return '';
     }
-    
-    // let licenseStr = `[![License: ${license}]`;
-    // const licenseLink = license.replace(/\s/g, '_');
-    // const licenseColor = getLicenseColor(license);
-    // const linkImg = `https://img.shields.io/badge/License-${licenseLink}-${licenseColor}.svg`;
-    // licenseStr += `(${linkImg})]()`;
-    // return licenseStr;
 };
 
-// const getLicenseColor = license => {
-//     const keys = Object.keys(licenseColors);
-//     for(let color of keys) {
-//         if(license.includes(`${color}`)) {
-//             return licenseColors[color];
-//         }
-//     }
-
-//     return '';
-// };
 
 //----------------------------------- Create LICENSE ---------------------------------------------//
 
@@ -217,6 +200,7 @@ const getGithubFile = license => {
 //----------------------------------- Interface Sugar --------------------------------------------//
 
 const printIntro = () => {
+    
     console.log(
         `
         #########################################################\n
@@ -229,7 +213,7 @@ const printIntro = () => {
         4. That's it! Hope you enjoy :)\n
         #########################################################\n
         `
-    )
+    );
 };
 
 //----------------------------------- INIT ------------------------------------------------------//
@@ -238,21 +222,24 @@ const init = () => {
     //print intro
     printIntro();
 
-    let folder = './Created_Docs';
+    let folder = './Documents';
 
     if(process.argv.length > 2) {
-        folder = process.argv[2];
+        folder = './' + process.argv[2];
+    }
+
+    //create folder to hold written files if it does not already exist
+    if (!fs.existsSync(folder)) {
+        fs.mkdir(folder, (err) => {
+            if (err) {
+                console.log("Failes to create folder");
+                return;
+            };
+        });
     }
 
     //ask questions
     inquirer.prompt(questions).then(response => {
-
-        //create folder to hold written files if it does not already exist
-        if (!fs.existsSync(folder)) {
-            fs.mkdir(folder, (err) => {
-                if (err) throw err;
-            });
-        }
         
         //write readme file
         writeToFile(folder + '/README.md', response);
