@@ -1,9 +1,9 @@
-# Professional README Generator
+# Professional README Generator [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Description
 
-This is a professional readme generator created as part of a coding bootcamp. It takes in user input in a node terminal to generate a readme. It has been developed
-to the following user story and acceptance criteria.
+This is a professional readme generator created as part of a coding bootcamp. It takes in user input in a node terminal to generate a readme and optional License file using the Github octokit.
+It has been developed to the following user story and acceptance criteria.
 
 ## User Story
 
@@ -32,3 +32,60 @@ THEN this is added to the section of the README entitled Questions, with instruc
 WHEN I click on the links in the Table of Contents
 THEN I am taken to the corresponding section of the README
 ```
+
+## Usage
+
+A prerequisite to using this code is having Node.js.
+
+1. Clone The repository or download a local copy
+2. Open a Terminal in the folder index.js is located
+3. Type in  `npm install`. This will set up all the packages you need.
+4. Type in `node index.js`
+5. Follow the prompts in the command line
+<br/>
+<br/>
+
+### **Specifying a destination folder**
+
+It is recommended that you just use the default parameters for this application and then copy the created readme and license to your desired folder.
+However if you want to specify another spot for these files to be written you can do so by passing an argument when launching the code.
+<br/>
+For example `node index.js myDocs` will create a folder located in the same folder as index.js called "myDocs". 
+<br/>
+You can also specify any other location by putting in the correct navigation path from index.js. 
+If you want to write them to your parent folder you would write `node index ../myDocs`.
+
+<br/>
+
+### **Entering Sections**
+
+For some parts of the readme creation, your default text editor will be opened to allow you to enter data. For this to be properly formatted 
+you need to write the text using markdown. A good starting guide for that is [here](https://www.markdownguide.org/basic-syntax/).
+
+When you are ready to save your entry simply close the text editor and click save when prompted. If you want to leave the section blank just type
+anything (the document needs to have some content in it) and click don't save upon exit.
+
+If you want to not include the section in your document type `!DEL` in the file, exit and save.
+
+<br/>
+
+### **License.md**
+
+If you select yes to the option, a LICENSE.md file will also be created in the same folder for the license you chose.
+
+<br/>  
+
+### **Example Video**
+<br/>
+
+To be added.
+<br/>
+
+## License
+
+MIT
+
+## Links
+
+[My Github Account](https://github.com/mattyd96)
+

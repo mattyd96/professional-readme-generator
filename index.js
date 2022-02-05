@@ -1,10 +1,15 @@
 //---------------------- Packages needed for this application -------------------------------//
+//local js in utils
 const createReadme = require('./utils/generateReadme');
 const getGithubFile = require('./utils/generateLicense');
+
+//external packages
 const inquirer = require('inquirer');
-const fs = require('fs');
-//const { request } = require("@octokit/request");
 const async = require("async");
+
+//node native packages
+const fs = require('fs');
+
 
 //---------------------- Array of questions for user input ----------------------------------//
 
@@ -66,7 +71,8 @@ const questions = [
 
 //---------------------------------- write File -----------------------------------------//
 
-const writeToFile = (fileName, data) => {
+
+const writeReadmeDoc = (fileName, data) => {
     const text = createReadme(data);
 
     fs.writeFile(fileName, text, (err) =>
@@ -83,13 +89,6 @@ const writeLicenseDoc = async (fileName, data) => {
         );
     //});
 };
-
-
-
-//----------------------------------- Create LICENSE ---------------------------------------------//
-
-
-
 
 //----------------------------------- Interface Sugar --------------------------------------------//
 
@@ -136,7 +135,7 @@ const init = () => {
     inquirer.prompt(questions).then(response => {
         
         //write readme file
-        writeToFile(folder + '/README.md', response);
+        writeReadmeDoc(folder + '/README.md', response);
 
         //If user requested, write a license file
         if(response.licenseDoc === 'Yes') {
