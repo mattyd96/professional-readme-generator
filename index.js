@@ -2,6 +2,8 @@
 
 const inquirer = require('inquirer');
 const fs = require('fs');
+const { request } = require("@octokit/request");
+const async = require("async");
 
 const licenseColors = {
     MIT : 'yellow',
@@ -76,12 +78,15 @@ const writeToFile = (fileName, data) => {
     );
 };
 
-const writeLicenseDoc = (filename) => {
-    const text = getGithubFile();
+const writeLicenseDoc = async (fileName, data) => {
+    const text = await getGithubFile(data.license);
+    console.log(text);
 
-    fs.writeFile(fileName, text , (err) =>
-        err ? console.error(err) : console.log('License created!')
-    );
+    //text.then(() => {
+        fs.writeFile(fileName, text.data.body , (err) =>
+            err ? console.error(err) : console.log('License created!')
+        );
+    //});
 };
 
 
@@ -179,7 +184,20 @@ const getLicenseColor = license => {
 //----------------------------------- Create LICENSE ---------------------------------------------//
 
 const getGithubFile = license => {
-    
+
+    return new Promise((resolve) => {
+        resolve(
+            request(`GET /licenses/${license}`, {
+                license: 'license'
+            })
+          );
+    });
+//     let licenseFile = await request(`GET /licenses/${license}`, {
+//         license: 'license'
+//       });
+//     //licenseFile.then(() => {
+//         return licenseFile.body;
+//     //});   
 };
 //----------------------------------- Interface Sugar --------------------------------------------//
 
@@ -207,7 +225,7 @@ const init = () => {
         writeToFile('./Created-docs/README.md', response);
 
         if(response.licenseDoc === 'Yes') {
-            writeLicenseDoc('./Created-docs/LICENSE.md', response.license);
+            writeLicenseDoc('./Created-docs/LICENSE.md', response);
         }
     });
 };
