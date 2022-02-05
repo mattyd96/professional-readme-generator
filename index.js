@@ -3,6 +3,11 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 
+const licenseColors = {
+    MIT : 'yellow',
+    Unlicense : 'blue'
+}
+
 //---------------------- Array of questions for user input ----------------------------------//
 
 const questions = [
@@ -49,8 +54,14 @@ const questions = [
     {
         type: 'list',
         message: 'What License do you want to use? ',
-        name: 'License',
-        choices: ['MIT', 'APACHE', 'CC0']
+        name: 'license',
+        choices: ['MIT', 'Unlicense']
+    }, 
+    {
+        type: 'list',
+        message: 'Do you want a license document? ',
+        name: 'licenseDoc',
+        choices: ['Yes', 'No']
     },
     
 ];
@@ -61,8 +72,15 @@ const writeToFile = (fileName, data) => {
     const text = createReadme(data);
 
     fs.writeFile(fileName, text, (err) =>
-    
         err ? console.error(err) : console.log('Commit logged!')
+    );
+};
+
+const writeLicenseDoc = (filename) => {
+    const text = getGithubFile();
+
+    fs.writeFile(fileName, text , (err) =>
+        err ? console.error(err) : console.log('License created!')
     );
 };
 
@@ -75,8 +93,9 @@ const createReadme = data => {
     const contents = ['Installation', 'Usage', 'How to Contribute', 'Tests'];
     const usedContents = [];
 
-    //Add Title
-    const title = createTitle(data.title);
+    //Add Title and license
+    const title = createTitle(data.title, data.license);
+
     //Add Description
     const desc = createSection('Description', data.description);
 
@@ -92,6 +111,10 @@ const createReadme = data => {
     sections.push(createQuestions(data.github, data.email));
     usedContents.push('Questions');
 
+    //create license Section
+    sections.push(createSection('License', data.license))
+    usedContents.push('License');
+
     //Add Table of Contents
     const tableCont = createTableCont(usedContents);
 
@@ -100,9 +123,9 @@ const createReadme = data => {
 };
 
 // Create Title
-const createTitle = title => {
+const createTitle = (title, license) => {
     //TODO also create license badges here
-    return `# ${title}\n\n`;
+    return `# ${title}\n${createLicenseBadge(license)}\n\n`;
 };
 
 // Create Table of Contents
@@ -132,7 +155,32 @@ const createQuestions = (github, email) => {
     return desc + githubLink + emailLink;
 };
 
+//Create license Badge
+const createLicenseBadge = license => {
+    let licenseStr = `[![License: ${license}]`;
+    const licenseLink = license.replace(/\s/g, '_');
+    const licenseColor = getLicenseColor(license);
+    const linkImg = `https://img.shields.io/badge/License-${licenseLink}-${licenseColor}.svg`;
+    licenseStr += `(${linkImg})]()`;
+    return licenseStr;
+};
 
+const getLicenseColor = license => {
+    const keys = Object.keys(licenseColors);
+    for(let color of keys) {
+        if(license.includes(`${color}`)) {
+            return licenseColors[color];
+        }
+    }
+
+    return '';
+};
+
+//----------------------------------- Create LICENSE ---------------------------------------------//
+
+const getGithubFile = license => {
+    
+};
 //----------------------------------- Interface Sugar --------------------------------------------//
 
 const printIntro = () => {
@@ -156,7 +204,11 @@ const printIntro = () => {
 const init = () => {
     printIntro();
     inquirer.prompt(questions).then(response => {
-        writeToFile('./Created-readme/README.md', response);
+        writeToFile('./Created-docs/README.md', response);
+
+        if(response.licenseDoc === 'Yes') {
+            writeLicenseDoc('./Created-docs/LICENSE.md', response.license);
+        }
     });
 };
 
