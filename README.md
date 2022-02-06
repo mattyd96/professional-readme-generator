@@ -62,8 +62,7 @@ If you want to write them to your parent folder you would write `node index ../m
 For some parts of the readme creation, your default text editor will be opened to allow you to enter data. For this to be properly formatted 
 you need to write the text using markdown. A good starting guide for that is [here](https://www.markdownguide.org/basic-syntax/).
 
-When you are ready to save your entry simply close the text editor and click save when prompted. If you want to leave the section blank just type
-anything (the document needs to have some content in it) and click don't save upon exit.
+When you are ready to save your entry simply close the text editor and click save when prompted. If you want to leave the section blank just close the editor when it pops up.
 
 If you want to not include the section in your document type `!DEL` in the file, exit and save.
 
@@ -78,7 +77,7 @@ If you select yes to the option, a LICENSE.md file will also be created in the s
 ### **Example Video**
 <br/>
 
-To be added.
+[![Demo Video](./Demos/demo.png)](./Demos/demo.mp4)
 <br/>
 
 ## License
@@ -89,3 +88,4 @@ MIT
 
 [My Github Account](https://github.com/mattyd96)
 
+[Email: matthewdcodes@gmail.com](mailto:matthewdcodes@gmail.com)

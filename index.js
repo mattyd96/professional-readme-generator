@@ -100,10 +100,14 @@ const printIntro = () => {
         Welcome to the README writer\n
         #########################################################\n
         How to use:\n
-        1. Respond to each question with the appropriate information\n
-        2. Leaving a question blank will still create the section but leave it blank\n
-        3. writing '!DEL' will skip the section and it will not be created.\n
-        4. That's it! Hope you enjoy :)\n
+        * Respond to each question with the appropriate information\n
+        * Some sections will pull up a text editor, put your desired information for that section, Close and click save\n
+        * Make sure the entered text is properly formatted with markdown to be rendered correctly\n
+        * You can learn more about markdown language here: https://www.markdownguide.org/basic-syntax/\n
+        * Leaving a question blank will still create the section but leave it blank\n
+        * writing '!DEL' will skip the section and it will not be created.\n
+        * If you need to exit early just "ctrl c"\n
+        * Thats it, Enjoy :)\n
         #########################################################\n
         `
     );
