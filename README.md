@@ -77,8 +77,6 @@ If you select yes to the option, a LICENSE.md file will also be created in the s
 ### **Example Video**
 <br/>
 
-[![Demo Video](./Demos/demo.png)](./Demos/demo.mp4)
-<br/>
 
 ## License
 
